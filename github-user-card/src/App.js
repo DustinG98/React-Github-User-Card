@@ -41,7 +41,6 @@ class App extends React.Component {
             newFollowers.push(res.data)
             this.setState({followers: newFollowers})
           })
-          console.log(newFollowers)
       })
     }
   }
@@ -62,7 +61,6 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        {console.log(this.state.searchUser)}
         <div className="searchUser">
           <form>
             <input type="text" name="user" value={this.state.searchUser} onChange={this.handleChanges}/>
