@@ -93,6 +93,11 @@ form button {
   color: white;
   font-weight: 700;
 }
+form input {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 2px solid teal;
+}
 
 .cardsCont {
   display: flex;

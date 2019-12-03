@@ -63,7 +63,7 @@ class App extends React.Component {
       <div className="App">
         <div className="searchUser">
           <form>
-            <input type="text" name="user" value={this.state.searchUser} onChange={this.handleChanges}/>
+            <input type="text" name="user" value={this.state.searchUser} onChange={this.handleChanges} placeholder="Search for a user"/>
             <button onClick={e => this.fetchFollowers(e)}>{`Fetch ${this.state.user.login}'s Followers`}</button>
           </form>
         </div>
