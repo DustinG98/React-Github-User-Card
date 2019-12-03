@@ -18,16 +18,13 @@ class App extends React.Component {
   componentDidMount() {
     axios.get('https://api.github.com/users/DustinG98')
       .then(res => {
-        console.log(res.data)
         this.setState({ user: res.data })
       })
       .catch(err => console.log(err))
     axios.get('https://api.github.com/users/DustinG98/followers') 
       .then(res => {
-        console.log(res)
-        const newFollowerLogins = [];
-        
-        this.setState({ followers: res.data })
+        const newFollowerLogins = res.data.map(follower => follower.login);
+        this.setState({ followers: res.data, followerLogins: newFollowerLogins })
       })
   }
 
@@ -36,6 +33,17 @@ class App extends React.Component {
       axios.get(`https://api.github.com/users/${this.state.searchUser}`)
         .then(res => this.setState({ user: res.data }))
     } 
+    if(prevState.followerLogins !== this.state.followerLogins) {
+      const newFollowers = [];
+      this.state.followerLogins.forEach(follower => {
+        axios.get(`https://api.github.com/users/${follower}`)
+          .then(res => {
+            newFollowers.push(res.data)
+            this.setState({followers: newFollowers})
+          })
+          console.log(newFollowers)
+      })
+    }
   }
   
   handleChanges = (e) => {
@@ -45,7 +53,10 @@ class App extends React.Component {
   fetchFollowers = e => {
     e.preventDefault();
     axios.get(`https://api.github.com/users/${this.state.searchUser}/followers`)
-      .then(res => this.setState({ followers: res.data }))
+      .then(res => {
+        const newFollowerLogins = res.data.map(follower => follower.login);
+        this.setState({ followers: res.data, followerLogins: newFollowerLogins })
+      })
   }
 
   render() {
@@ -61,7 +72,7 @@ class App extends React.Component {
         <div className="cardsCont">
           <GitHubCard user={this.state.user} />
           <div className="cards">
-            <h2>{`${this.state.user.login}'s Followers`}</h2>
+            <h2 style={{fontSize: '2rem'}}>{`${this.state.user.login}'s Followers`}</h2>
             <GitHubFollowers followers={this.state.followers} />
           </div>
         </div>
