@@ -3,6 +3,7 @@ import './App.css';
 import axios from 'axios'
 import GitHubCard from './components/GitHubCard'
 import GitHubFollowers from './components/GitHubFollowers'
+import GitHubCalendar from 'react-github-calendar';
 
 class App extends React.Component {
   constructor() {
@@ -11,7 +12,8 @@ class App extends React.Component {
       user: {},
       followers: [],
       followerLogins: [],
-      searchUser: ""
+      searchUser: "",
+      searchTerm: ""
     }
   }
 
@@ -46,11 +48,16 @@ class App extends React.Component {
   }
   
   handleChanges = (e) => {
-    this.setState({ searchUser: e.target.value })
+    this.setState({ searchTerm: e.target.value })
+  }
+
+  handleChangeUser = (e) => {
+    this.setState({ searchUser: this.state.searchTerm })
   }
 
   fetchFollowers = e => {
     e.preventDefault();
+    this.handleChangeUser();
     axios.get(`https://api.github.com/users/${this.state.searchUser}/followers`)
       .then(res => {
         const newFollowerLogins = res.data.map(follower => follower.login);
@@ -63,12 +70,13 @@ class App extends React.Component {
       <div className="App">
         <div className="searchUser">
           <form>
-            <input type="text" name="user" value={this.state.searchUser} onChange={this.handleChanges} placeholder="Search for a user"/>
-            <button onClick={e => this.fetchFollowers(e)}>{`Fetch ${this.state.user.login}'s Followers`}</button>
+            <input type="text" name="user" value={this.state.searchTerm} onChange={this.handleChanges} placeholder="Search for a user"/>
+            <button onClick={e => this.fetchFollowers(e)}>{`Fetch ${this.state.searchTerm || "DustinG98"}'s Github`}</button>
           </form>
         </div>
         <div className="cardsCont">
           <GitHubCard user={this.state.user} />
+          <GitHubCalendar username={`${this.state.searchUser}` || "dusting98"}/>
           <div className="cards">
             <h2 style={{fontSize: '2rem'}}>{`${this.state.user.login}'s Followers`}</h2>
             <GitHubFollowers followers={this.state.followers} />
